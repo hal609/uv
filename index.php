@@ -69,9 +69,21 @@ echo "$text";
 echo "</div>";
 }
 
+function warnmsg($text) {
+echo "<div class=\"alert alert-warning\" role=\"alert\"><span class=\"glyphicon glyphicon-warning-sign\" aria-hidden=\"true\"></span> ";
+echo "$text";
+echo "</div>";
+}
+
 function okmsg($text) {
 echo "<div class=\"alert alert-success\" role=\"alert\"><span class=\"glyphicon glyphicon-ok\" aria-hidden=\"true\"></span> ";
 echo "$text";
+echo "</div>";
+}
+
+function twosentencewarnmsg($text1, $text2, $username) {
+echo "<div class=\"alert alert-warning\" role=\"alert\"><span class=\"glyphicon glyphicon-warning-sign\" aria-hidden=\"true\"></span> ";
+echo "$text1 $username $text2";
 echo "</div>";
 }
 
@@ -94,10 +106,19 @@ while ((substr($username, 0, 1) == ' ') | (substr($username, 0, 1) == '_'))
   $username = substr($username,1, );
 }
 
+// Warn about replacing underscores with spaces
+if (str_contains($username,'_')) {
+  $username = str_replace('_',' ', $username);
+  twosentencewarnmsg($adjustWarn1, $adjustWarn2, $username);
+}
+
+// Warn about capitalising the first letter
 if (preg_match('/^[a-z].*$/', $username)) {
-    errormsg($t1);
-    $valid = "false";
-} elseif (preg_match('/\@/', $username)) {
+    $username = strtoupper(substr($username,0, 1)) . substr($username, 1);
+    twosentencewarnmsg($adjustWarn1, $adjustWarn2, $username);
+}
+
+if (preg_match('/\@/', $username)) {
     errormsg($t2);
    $valid = "false";
 } elseif (preg_match('/.{40}/', $username)) {
@@ -106,6 +127,34 @@ if (preg_match('/^[a-z].*$/', $username)) {
 } elseif (preg_match('/(\/|\#|\<|\>|\[|\]|\||\{|\}|@|:|=)/', $username)) {
     errormsg($t4);
    $valid = "false";
+// Username must not start with '~2'
+} elseif ((substr($username, 0, 2) == '~2')) {
+    errormsg($t10);
+   $valid = "false";
+// Check for invalid Unicode characters
+} elseif (preg_match('/[\x{0080}-\x{009F}\x{00A0}\x{2000}-\x{200F}\x{2028}-\x{202F}\x{3000}\x{E000}-\x{F8FF}]/', $username)) {
+    errormsg($t11);
+   $valid = "false";
+// Check name is not reserved
+} elseif (in_array($username, $wgReservedUsernames)) {
+    errormsg($t12);
+    $valid = "false";
+// Check name does not resemble IP address
+} elseif (preg_match('/\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/', $username)) {
+    errormsg($t13);
+    $valid = "false";
+// Check name does not imply elevated privilege
+} elseif (preg_match('/\b(admin|administrator|sysop|moderator|bureaucrat|steward|checkuser|oversight)\b/i', $username)) {
+    errormsg($t14);
+    $valid = "false";
+// Name should not include top-level domains
+} elseif (preg_match('/(\.gov|\.edu|\.com|\.org|\.net|\.co\.uk|\.uk)/', $username)) {
+    errormsg($t15);
+    $valid = "false";
+// Check for trailing full stop
+} else if (substr($username, -1) == '.') {
+  errormsg($t15);
+  $valid = 'false';
 } else {
     $valid = "true";
 }
