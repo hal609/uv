@@ -88,6 +88,12 @@ while ((substr($username, -1) == ' ') | (substr($username, -1) == '_'))
   $username = substr($username,0, -1);
 }
 
+// Strip leading underscores and spaces to match Wikipedia behaviour
+while ((substr($username, 0, 1) == ' ') | (substr($username, 0, 1) == '_'))
+{
+  $username = substr($username,1, );
+}
+
 if (preg_match('/^[a-z].*$/', $username)) {
     errormsg($t1);
     $valid = "false";
