@@ -103,7 +103,7 @@ if (preg_match('/^[a-z].*$/', $username)) {
 } elseif (preg_match('/.{40}/', $username)) {
     errormsg($t3);
    $valid = "false";
-} elseif (preg_match('/(\#|\<|\>|\[|\]|\||\{|\}\/)/', $username)) {
+} elseif (preg_match('/(\/|\#|\<|\>|\[|\]|\||\{|\}|@|:|=)/', $username)) {
     errormsg($t4);
    $valid = "false";
 } else {
