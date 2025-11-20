@@ -127,16 +127,18 @@
         $username = substr($username, 1, );
       }
 
+      $change_warn = "false";
+
       // Warn about replacing underscores with spaces
       if (str_contains($username, '_')) {
         $username = str_replace('_', ' ', $username);
-        twosentencewarnmsg($adjustWarn1, $adjustWarn2, $username);
+        $change_warn = 'true';
       }
 
       // Warn about capitalising the first letter
       if (preg_match('/^[a-z].*$/', $username)) {
         $username = strtoupper(substr($username, 0, 1)) . substr($username, 1);
-        twosentencewarnmsg($adjustWarn1, $adjustWarn2, $username);
+        $change_warn = 'true';
       }
 
       if (preg_match('/\@/', $username)) {
@@ -182,6 +184,10 @@
         $valid = "false";
       } else {
         $valid = "true";
+      }
+
+      if ($change_warn == "true") {
+        twosentencewarnmsg($adjustWarn1, $adjustWarn2, $username);
       }
 
       if ($valid == "true") {
