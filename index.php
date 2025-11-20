@@ -186,11 +186,11 @@
         $valid = "true";
       }
 
-      if ($change_warn == "true") {
-        twosentencewarnmsg($adjustWarn1, $adjustWarn2, $username);
-      }
-
       if ($valid == "true") {
+        if ($change_warn == "true") {
+          twosentencewarnmsg($adjustWarn1, $adjustWarn2, $username);
+        }
+
         okmsg($t5);
 
         $tools_pw = posix_getpwuid(posix_getuid());
