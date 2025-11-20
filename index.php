@@ -82,6 +82,12 @@ echo "<span class=\"glyphicon glyphicon-user\" aria-hidden=\"true\"></span> <b>"
 echo $un; echo ":</b> "; echo htmlspecialchars($username);
 echo "<br><br>";
 
+// Strip trailing underscores and spaces to match Wikipedia behaviour
+while ((substr($username, -1) == ' ') | (substr($username, -1) == '_'))
+{
+  $username = substr($username,0, -1);
+}
+
 if (preg_match('/^[a-z].*$/', $username)) {
     errormsg($t1);
     $valid = "false";
